@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react'
+import axios from 'axios'
+import { Redirect } from 'react-router'
 
 import './NewPost.css';
-
-import axios from 'axios';
 
 class NewPost extends Component {
   emptyState = {
@@ -10,28 +10,38 @@ class NewPost extends Component {
     body: '',
     author: 'Max'
   };
-  
+
   state = {
     title: '',
     body: '',
-    author: 'Max'
+    author: 'Max',
+    submitted: false
   };
-  
+
   postDataHandler = () => {
     if (JSON.stringify(this.emptyState) !== JSON.stringify(this.state)) {
       const data = {...this.state};
-      
+
       axios.post('https://jsonplaceholder.typicode.com/posts', data)
         .then(response => {
-          this.props.addNewClicked({...response.data});
+          // this.props.addNewClicked({...response.data});
           this.setState({...this.emptyState});
+          // or this.props.history.push or replace
+          this.setState({ submitted: true });
         })
     }
   };
-  
+
   render() {
+    let redirect = null;
+
+    if (this.state.submitted) {
+      redirect = <Redirect to="/" />;
+    }
+
     return (
       <div className="NewPost">
+        { redirect }
         <h1>Add a Post</h1>
           <label>Title</label>
           <input type="text" value={this.state.title} onChange={(event) => this.setState({title: event.target.value})}/>

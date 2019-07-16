@@ -9,22 +9,22 @@ class FullPost extends Component {
     loadedPost: null,
     hasError: false
   };
-  
+
   componentWillReceiveProps(nextProps, nextContext) {
     this.setState({
       hasError: false
     });
   }
-  
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.id) {
-      if (!this.state.hasError && (!this.state.loadedPost || (this.state.loadedPost && this.state.loadedPost.id !== this.props.id))) {
-        axios.get('/posts/' + this.props.id)
+
+  componentDidMount(prevProps, prevState, snapshot) {
+    if (this.props.match.params.id) {
+      if (!this.state.hasError && (!this.state.loadedPost || (this.state.loadedPost && this.state.loadedPost.id !== +this.props.match.params.id))) {
+        axios.get('/posts/' + this.props.match.params.id)
           .then(response => {
             this.setState({ loadedPost: response.data });
           })
           .catch(() => {
-            
+
             this.setState({
               hasError: true,
               loadedPost: null
@@ -33,14 +33,14 @@ class FullPost extends Component {
       }
     }
   }
-  
+
   deletePostHandler = () => {
-    if (this.props.id) {
+    if (this.props.match.params.id) {
       if (this.state.loadedPost) {
-        axios.delete('/posts/' + this.props.id)
+        axios.delete('/posts/' + this.props.match.params.id)
           .then(response => {
-            this.props.deleteClicked(this.props.id);
-      
+            this.props.deleteClicked(this.props.match.params.id);
+
             this.setState({
               loadedPost: null
             });
@@ -48,18 +48,18 @@ class FullPost extends Component {
       }
     }
   };
-  
+
   render() {
     let post = <p style={{textAlign: 'center'}}>Something went wrong!</p>;
-    
+
     if (!this.state.hasError) {
       post = <p style={{textAlign: 'center'}}>Please select a Post!</p>;
     }
-    
-    if (this.props.id && !this.state.hasError) {
+
+    if (this.props.match.params.id && !this.state.hasError) {
       post = <p style={{textAlign: 'center'}}>Loading!</p>;
     }
-    
+
     if (this.state.loadedPost && !this.state.hasError) {
       post = (
         <div className="FullPost">
@@ -71,9 +71,9 @@ class FullPost extends Component {
         </div>
       );
     }
-    
+
     return post;
-    
+
   }
 }
 
