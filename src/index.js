@@ -10,7 +10,7 @@ import axios from 'axios';
 axios.defaults.baseURL = 'https://jsonplaceholder.typicode.com/';
 axios.defaults.headers.common['Authorization'] = 'AUTH TOKEN';
 
-const requestInterceptor = axios.interceptors.request.use(request => {
+axios.interceptors.request.use(request => {
   console.log(request);
   // Add headers etc
   return request;
@@ -19,7 +19,7 @@ const requestInterceptor = axios.interceptors.request.use(request => {
   return Promise.reject(error);
 });
 
-const responseInterceptor = axios.interceptors.response.use(response => {
+axios.interceptors.response.use(response => {
   console.log(response);
   return response;
 }, error => {
